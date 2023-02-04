@@ -1,0 +1,13 @@
+@import "src/scss/colors";
+
+.setting-btn {
+  background: transparent;
+  border: 0;
+  color: rgba(red($dark-blue), green($dark-blue), blue($dark-blue), 0.4);
+  cursor: pointer;
+  transition: color 150ms;
+
+  &:hover {
+    color: rgba(red($dark-blue), green($dark-blue), blue($dark-blue), 0.7);
+  }
+}

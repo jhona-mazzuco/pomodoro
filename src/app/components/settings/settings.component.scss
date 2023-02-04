@@ -1,0 +1,16 @@
+@import "src/scss/colors";
+
+.setting {
+  width: 450px;
+  height: 100%;
+  background: $text-color;
+  border-radius: 16px;
+  padding: 1rem 2rem;
+  color: $navy-blue;
+
+  &__title {
+    width: 100%;
+    text-align: center;
+    font-weight: bold;
+  }
+}

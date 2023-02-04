@@ -1,0 +1,17 @@
+@import "src/scss/colors";
+
+.sound {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+  list-style: none;
+  padding: 0;
+
+  &__item {
+    color: $gray;
+
+    &--active {
+      color: $sky-blue;
+    }
+  }
+}

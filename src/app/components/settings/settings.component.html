@@ -1,0 +1,16 @@
+<div class="setting">
+  <h1 class="setting__title">Configurações</h1>
+
+  {{ form.value | json }}
+
+  <form class="setting__content" [formGroup]="form">
+    <div class="setting__control">
+      <label>Tempo:</label>
+    </div>
+
+    <div class="setting__control">
+      <label>Som de aviso:</label>
+      <app-sound-input formControlName="sound"></app-sound-input>
+    </div>
+  </form>
+</div>

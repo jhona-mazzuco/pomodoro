@@ -1,0 +1,10 @@
+<div class="pomodoro">
+  <app-circular-progress [percentage]="service.progress">
+    <p class="pomodoro__timer">{{ service.displayTime | date: 'mm:ss' }}</p>
+    <p class="pomodoro__status">{{ status ? 'Iniciado' : 'Pausado' }}</p>
+  </app-circular-progress>
+
+  <button class="pomodoro__button" (click)="changeStatus()">
+    <fa-icon [icon]="status ? pauseIcon : playIcon" size="2x"></fa-icon>
+  </button>
+</div>

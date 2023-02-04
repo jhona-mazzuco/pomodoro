@@ -1,0 +1,5 @@
+<ul class="sound">
+  <li class="sound__item" [class.sound__item--active]="value === sound" *ngFor="let sound of sounds" (click)="writeValue(sound)">
+    <fa-icon [icon]="soundIcon" size="3x"></fa-icon>
+  </li>
+</ul>

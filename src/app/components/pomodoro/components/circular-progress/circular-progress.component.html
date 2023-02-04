@@ -1,0 +1,18 @@
+<div class="progress">
+  <div class="progress__content">
+    <ng-content></ng-content>
+  </div>
+  <svg>
+    <defs>
+      <linearGradient id="Gradient">
+        <stop id="center" offset="50%"/>
+        <stop id="start" offset="100%"/>
+        <stop id="finish" offset="0%"/>
+      </linearGradient>
+    </defs>
+    <circle id="background" r="120" cy="50%" cx="50%" stroke-linecap="round"></circle>
+    <circle id="progress" r="120" cy="50%" cx="50%" stroke-linecap="round" [ngStyle]="{
+        'stroke-dashoffset': 750 + (750 * percentage)
+      }"></circle>
+  </svg>
+</div>

@@ -1,0 +1,44 @@
+@import "src/scss/colors";
+
+.progress {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  &__content {
+    position: absolute;
+  }
+
+  svg {
+    fill: none;
+    stroke-width: 30px;
+    width: 315px;
+    height: 315px;
+    transform: rotate(-90deg);
+
+    #background {
+      stroke: $pastel;
+    }
+
+    #progress {
+      stroke: url(#Gradient);
+      stroke-dasharray: 750px;
+      filter: drop-shadow(0px 0px 8px rgba(0, 0, 0, 0.2));
+    }
+
+    #Gradient {
+      & > #start {
+        stop-color: $sky-blue;
+      }
+
+      & > #center {
+        stop-color: $navy-blue;
+      }
+
+      & > #finish {
+        stop-color: $blue;
+      }
+    }
+  }
+}

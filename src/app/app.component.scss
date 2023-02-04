@@ -1,0 +1,19 @@
+.application {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+
+  &__title {
+    font-size: 48px;
+  }
+
+  &__content {
+    margin: 2rem 0;
+  }
+
+  &__setting {
+    margin-top: 1rem;
+  }
+}

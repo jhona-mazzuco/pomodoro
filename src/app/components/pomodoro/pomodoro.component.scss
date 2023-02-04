@@ -1,0 +1,43 @@
+@import "src/scss/colors";
+
+.pomodoro {
+  width: 400px;
+  height: 450px;
+  background: rgba(red($dark-blue), green($dark-blue), blue($dark-blue), 0.4);
+  border-radius: 8px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1rem;
+  align-items: center;
+  box-shadow: 0 0 12px rgba(red($sky-blue), green($sky-blue), blue($sky-blue), 0.75);
+
+  &__timer {
+    font-size: 30px;
+    letter-spacing: 5px;
+    font-weight: bold;
+  }
+
+  &__status {
+    text-align: center;
+  }
+
+  &__button {
+    width: 60px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: linear-gradient(20deg, $sky-blue, $navy-blue);
+    border: 0;
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.2);
+    color: $text-color;
+    cursor: pointer;
+    transition: transform 250ms;
+    &:hover {
+      transform: scale(1.25);
+    }
+  }
+}
