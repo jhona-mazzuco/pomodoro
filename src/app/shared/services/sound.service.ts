@@ -1,16 +1,30 @@
 import { Injectable } from '@angular/core';
-import { DomSanitizer } from "@angular/platform-browser";
+import { LOCAL_STORAGE_KEYS } from "../constants/local-storage-keys.constant";
 import { AttentionAudio } from "../types/attention-audio.type";
 
 @Injectable({
   providedIn: 'root'
 })
 export class SoundService {
-  attentionFile: AttentionAudio = 'bell';
+  private _soundFile: AttentionAudio = 'bell';
 
-  constructor(private sanitizer: DomSanitizer) { }
+  get attentionFile(): AttentionAudio {
+    return window.localStorage.getItem(LOCAL_STORAGE_KEYS.SOUND_FILE) as AttentionAudio ?? this._soundFile;
+  }
 
-  playAttention(): void {
-    this.sanitizer.bypassSecurityTrustResourceUrl(`../../../assets/${this.attentionFile}.mp3`);
+  set attentionFile(val: AttentionAudio) {
+    this._soundFile = val;
+    window.localStorage.setItem(LOCAL_STORAGE_KEYS.SOUND_FILE, val);
+  }
+
+  playNotification(): void {
+    this.play(this._soundFile);
+  }
+
+  play(sound: AttentionAudio) {
+    const audio = new Audio();
+    audio.src = `/assets/sounds/${ sound }.mp3`;
+    audio.load();
+    audio.play();
   }
 }

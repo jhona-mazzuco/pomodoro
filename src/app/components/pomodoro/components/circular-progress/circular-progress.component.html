@@ -4,7 +4,7 @@
   </div>
   <svg>
     <defs>
-      <linearGradient id="Gradient">
+      <linearGradient id="gradient">
         <stop id="center" offset="50%"/>
         <stop id="start" offset="100%"/>
         <stop id="finish" offset="0%"/>
@@ -12,7 +12,7 @@
     </defs>
     <circle id="background" r="120" cy="50%" cx="50%" stroke-linecap="round"></circle>
     <circle id="progress" r="120" cy="50%" cx="50%" stroke-linecap="round" [ngStyle]="{
-        'stroke-dashoffset': 750 + (750 * percentage)
+        'stroke-dashoffset': 750 + (750 * (1 + percentage))
       }"></circle>
   </svg>
 </div>

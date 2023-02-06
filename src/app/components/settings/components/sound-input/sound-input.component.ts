@@ -1,6 +1,7 @@
 import { Component, forwardRef, OnInit } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from "@angular/forms";
 import { faMusic } from "@fortawesome/free-solid-svg-icons/faMusic";
+import { SoundService } from "../../../../shared/services/sound.service";
 import { AttentionAudio } from "../../../../shared/types/attention-audio.type";
 import { SOUNDS } from "../../constants/sounds.constant";
 
@@ -25,6 +26,9 @@ export class SoundInputComponent implements ControlValueAccessor, OnInit {
   onChange = (val: AttentionAudio) => {};
   onTouched = () => {};
 
+  constructor(private sound: SoundService) {
+  }
+
   ngOnInit(): void {
     this.onTouched();
   }
@@ -35,6 +39,11 @@ export class SoundInputComponent implements ControlValueAccessor, OnInit {
 
   registerOnTouched(fn: () => void): void {
     this.onTouched = fn;
+  }
+
+  onClick(sound: AttentionAudio): void {
+    this.sound.play(sound);
+    this.writeValue(sound);
   }
 
   writeValue(sound: AttentionAudio) {

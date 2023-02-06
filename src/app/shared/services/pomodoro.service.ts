@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { interval, Subscription, tap } from "rxjs";
+import { LOCAL_STORAGE_KEYS } from "../constants/local-storage-keys.constant";
 import { SoundService } from "./sound.service";
 
 @Injectable({
@@ -9,7 +10,17 @@ export class PomodoroService {
   private _timer!: Subscription;
   private _currentTimer: number = 0;
 
-  minutes: number = 5;
+  private _minutes: number = 5;
+
+  get minutes(): number {
+    const val = window.localStorage.getItem(LOCAL_STORAGE_KEYS.MINUTES);
+    return val ? Number.parseInt(val) : this._minutes;
+  }
+
+  set minutes(val: number) {
+    window.localStorage.setItem('@NG_POMODORO_MINUTES', val.toString());
+    this._minutes = val;
+  }
 
   displayTime: Date = new Date('2020-01-01 00:00');
   progress = 1;
@@ -36,7 +47,7 @@ export class PomodoroService {
           this._updateDisplay();
           if (this._currentTimer <= 0) {
             this.progress = 1;
-            this.sound.playAttention();
+            this.sound.playNotification();
             this.stop();
           } else {
             this.progress = this._currentTimer / this.minutesMS;

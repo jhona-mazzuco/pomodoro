@@ -1,0 +1,8 @@
+<div class="input">
+  <span class="input__icon" (click)="decrement()">-</span>
+  <div class="input__display">
+    <span class="input__value">{{ value }}</span>
+    <span class="input__legend">minuto{{ value > 1 ? 's' : '' }}</span>
+  </div>
+  <span class="input__icon" (click)="increment()">+</span>
+</div>

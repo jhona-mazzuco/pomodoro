@@ -11,6 +11,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { SettingButtonComponent } from './components/setting-button/setting-button.component';
 import { SettingsComponent } from './components/settings/settings.component';
 import { SoundInputComponent } from './components/settings/components/sound-input/sound-input.component';
+import { MinutesInputComponent } from './components/settings/components/minutes-input/minutes-input.component';
 
 @NgModule({
   declarations: [
@@ -19,7 +20,8 @@ import { SoundInputComponent } from './components/settings/components/sound-inpu
     CircularProgressComponent,
     SettingButtonComponent,
     SettingsComponent,
-    SoundInputComponent
+    SoundInputComponent,
+    MinutesInputComponent
   ],
   imports: [
     CommonModule,

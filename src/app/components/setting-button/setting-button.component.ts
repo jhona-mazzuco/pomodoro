@@ -29,6 +29,7 @@ export class SettingButtonComponent {
     ref.backdropClick().subscribe(() => ref.detach());
 
     const settingPortal = new ComponentPortal(SettingsComponent);
-    ref.attach(settingPortal);
+    const componentRef = ref.attach(settingPortal);
+    componentRef.instance.close.subscribe(() => ref.detach());
   }
 }

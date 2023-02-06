@@ -22,12 +22,13 @@
     }
 
     #progress {
-      stroke: url(#Gradient);
+      stroke: url(#gradient);
       stroke-dasharray: 750px;
       filter: drop-shadow(0px 0px 8px rgba(0, 0, 0, 0.2));
+      transition: stroke-dashoffset 750ms;
     }
 
-    #Gradient {
+    #gradient {
       & > #start {
         stop-color: $sky-blue;
       }

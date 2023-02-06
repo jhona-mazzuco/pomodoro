@@ -1,16 +1,17 @@
 <div class="setting">
   <h1 class="setting__title">Configurações</h1>
 
-  {{ form.value | json }}
-
-  <form class="setting__content" [formGroup]="form">
+  <form class="setting__content" [formGroup]="form" (ngSubmit)="onSubmit()">
     <div class="setting__control">
       <label>Tempo:</label>
+      <app-minutes-input formControlName="minutes"></app-minutes-input>
     </div>
 
     <div class="setting__control">
-      <label>Som de aviso:</label>
+      <label>Som da notificação:</label>
       <app-sound-input formControlName="sound"></app-sound-input>
     </div>
+
+    <button class="setting__submit">Salvar</button>
   </form>
 </div>
