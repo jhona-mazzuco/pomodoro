@@ -1,4 +1,3 @@
-import { OverlayRef } from "@angular/cdk/overlay";
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup } from "@angular/forms";
 import { PomodoroService } from "../../shared/services/pomodoro.service";
