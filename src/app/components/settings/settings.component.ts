@@ -1,5 +1,6 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup } from "@angular/forms";
+import { PROGRESS_STATE } from "../../shared/constants/progress-state.constant";
 import { PomodoroService } from "../../shared/services/pomodoro.service";
 import { SoundService } from "../../shared/services/sound.service";
 import { SettingForm } from "./interfaces/setting-form.interface";
@@ -24,17 +25,18 @@ export class SettingsComponent implements OnInit {
     this.buildForm();
   }
 
-  private buildForm() {
+  buildForm() {
     this.form = this.fb.group({
       minutes: [this.pomodoro.minutes],
-      sound: [this.sound.attentionFile]
+      sound: [this.sound.warningSavedFile]
     }) as FormGroup<SettingForm>;
   }
 
   onSubmit(): void {
     const { sound, minutes } = this.form.value;
     this.pomodoro.minutes = minutes!;
-    this.sound.attentionFile = sound!;
+    this.sound.warningSavedFile = sound!;
+    this.pomodoro.progress = PROGRESS_STATE.FINISH;
     this.close.emit();
   }
 }

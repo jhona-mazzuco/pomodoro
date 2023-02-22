@@ -6,5 +6,6 @@ import { Component, Input } from '@angular/core';
   styleUrls: ['./circular-progress.component.scss']
 })
 export class CircularProgressComponent {
-  @Input() percentage!: number
+  @Input() percentage!: number;
+  @Input() showProgress: boolean = false;
 }

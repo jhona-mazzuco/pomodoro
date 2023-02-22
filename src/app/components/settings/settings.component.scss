@@ -40,5 +40,11 @@
     border: 0;
     border-radius: 8px;
     cursor: pointer;
+    transition: background 200ms;
+
+    &:hover {
+      box-shadow: 0 2px 8px $pastel;
+      text-shadow: 0 0 4px $text-color;
+    }
   }
 }

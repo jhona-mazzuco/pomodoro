@@ -11,6 +11,10 @@
     font-weight: bold;
     cursor: pointer;
     user-select: none;
+
+    &:hover {
+      color: $sky-blue;
+    }
   }
 
   &__display {

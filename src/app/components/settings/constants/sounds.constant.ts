@@ -1,3 +1,3 @@
-import { AttentionAudio } from '../../../shared/types/attention-audio.type';
+import { WarningSound } from '../../../shared/types/warning-sound.type';
 
-export const SOUNDS: AttentionAudio[] = ['bell', 'attention', 'attention-whistle', 'cybersynth13']
+export const SOUNDS: WarningSound[] = ['bell', 'attention', 'attention-whistle', 'cybersynth13']

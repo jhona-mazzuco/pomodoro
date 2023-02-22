@@ -11,8 +11,8 @@
       </linearGradient>
     </defs>
     <circle id="background" r="120" cy="50%" cx="50%" stroke-linecap="round"></circle>
-    <circle id="progress" r="120" cy="50%" cx="50%" stroke-linecap="round" [ngStyle]="{
-        'stroke-dashoffset': 750 + (750 * (1 + percentage))
+    <circle *ngIf="showProgress" id="progress" r="120" cy="50%" cx="50%" stroke-linecap="round" [ngStyle]="{
+        'stroke-dashoffset': 750 + (750 * percentage)
       }"></circle>
   </svg>
 </div>

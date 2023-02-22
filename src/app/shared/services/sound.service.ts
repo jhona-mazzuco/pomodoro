@@ -1,29 +1,33 @@
-import { Injectable } from '@angular/core';
+import { Inject, Injectable } from '@angular/core';
 import { LOCAL_STORAGE_KEYS } from "../constants/local-storage-keys.constant";
-import { AttentionAudio } from "../types/attention-audio.type";
+import { LOCAL_STORAGE_TOKEN } from "../constants/local-storage-token";
+import { WarningSound } from "../types/warning-sound.type";
 
 @Injectable({
   providedIn: 'root'
 })
 export class SoundService {
-  private _soundFile: AttentionAudio = 'bell';
+  private _warningSound: WarningSound = 'bell';
 
-  get attentionFile(): AttentionAudio {
-    return window.localStorage.getItem(LOCAL_STORAGE_KEYS.SOUND_FILE) as AttentionAudio ?? this._soundFile;
+  get warningSavedFile(): WarningSound {
+    return this.localStorage.getItem(LOCAL_STORAGE_KEYS.WARNING_SOUND_FILE) as WarningSound ?? this._warningSound;
   }
 
-  set attentionFile(val: AttentionAudio) {
-    this._soundFile = val;
-    window.localStorage.setItem(LOCAL_STORAGE_KEYS.SOUND_FILE, val);
+  set warningSavedFile(val: WarningSound) {
+    this._warningSound = val;
+    this.localStorage.setItem(LOCAL_STORAGE_KEYS.WARNING_SOUND_FILE, val);
   }
 
-  playNotification(): void {
-    this.play(this._soundFile);
+  constructor(@Inject(LOCAL_STORAGE_TOKEN) private localStorage: Storage,) {
   }
 
-  play(sound: AttentionAudio) {
+  playWarning(): void {
+    this.play(this._warningSound);
+  }
+
+  play(soundName: WarningSound): void {
     const audio = new Audio();
-    audio.src = `/assets/sounds/${ sound }.mp3`;
+    audio.src = `/assets/sounds/${ soundName }.mp3`;
     audio.load();
     audio.play();
   }

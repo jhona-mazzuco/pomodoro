@@ -1,7 +1,7 @@
 import { FormControl } from "@angular/forms";
-import { AttentionAudio } from "../../../shared/types/attention-audio.type";
+import { WarningSound } from "../../../shared/types/warning-sound.type";
 
 export interface SettingForm {
   minutes: FormControl<number | null>;
-  sound: FormControl<AttentionAudio>
+  sound: FormControl<WarningSound | null>
  }

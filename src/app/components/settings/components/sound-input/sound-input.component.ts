@@ -2,7 +2,7 @@ import { Component, forwardRef, OnInit } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from "@angular/forms";
 import { faMusic } from "@fortawesome/free-solid-svg-icons/faMusic";
 import { SoundService } from "../../../../shared/services/sound.service";
-import { AttentionAudio } from "../../../../shared/types/attention-audio.type";
+import { WarningSound } from "../../../../shared/types/warning-sound.type";
 import { SOUNDS } from "../../constants/sounds.constant";
 
 @Component({
@@ -18,12 +18,12 @@ import { SOUNDS } from "../../constants/sounds.constant";
   ]
 })
 export class SoundInputComponent implements ControlValueAccessor, OnInit {
-  value!: AttentionAudio;
+  value!: WarningSound;
 
   soundIcon = faMusic;
   sounds = SOUNDS;
 
-  onChange = (val: AttentionAudio) => {};
+  onChange = (val: WarningSound) => {};
   onTouched = () => {};
 
   constructor(private sound: SoundService) {
@@ -33,7 +33,7 @@ export class SoundInputComponent implements ControlValueAccessor, OnInit {
     this.onTouched();
   }
 
-  registerOnChange(fn: (val: AttentionAudio) => void): void {
+  registerOnChange(fn: (val: WarningSound) => void): void {
     this.onChange= fn;
   }
 
@@ -41,12 +41,12 @@ export class SoundInputComponent implements ControlValueAccessor, OnInit {
     this.onTouched = fn;
   }
 
-  onClick(sound: AttentionAudio): void {
+  onClick(sound: WarningSound): void {
     this.sound.play(sound);
     this.writeValue(sound);
   }
 
-  writeValue(sound: AttentionAudio) {
+  writeValue(sound: WarningSound) {
     this.value = sound;
     this.onChange(sound);
   }
