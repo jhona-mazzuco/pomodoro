@@ -5,7 +5,9 @@
   flex-direction: row;
   justify-content: space-around;
   list-style: none;
+  flex-wrap: wrap;
   padding: 0;
+  gap: 8px;
 
   &__item {
     color: $gray;
