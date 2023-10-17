@@ -1,36 +1,53 @@
 import { DecimalPipe } from "@angular/common";
-import { EventEmitter, Inject, Injectable, OnDestroy, Output } from '@angular/core';
+import { Inject, Injectable, OnDestroy } from '@angular/core';
 import { interval, Subscription } from "rxjs";
 import { LOCAL_STORAGE_KEYS } from "../constants/local-storage-keys.constant";
 import { LOCAL_STORAGE_TOKEN } from "../constants/local-storage-token";
 import { PROGRESS_STATE } from "../constants/progress-state.constant";
+import { Period } from '../types/period';
 import { SoundService } from "./sound.service";
 
 @Injectable({
   providedIn: 'root'
 })
 export class PomodoroService implements OnDestroy {
-  @Output() onFinished = new EventEmitter<void>();
-
   private _timer!: Subscription;
   private _currentTime: number = 0;
-  private _minutes: number = 5;
+  private _workDefault: number = 25;
+  private _restDefault: number = 5;
 
+  finished = false;
   displayTime: Date = new Date('2020-01-01 00:00');
   progress = PROGRESS_STATE.START;
 
-  get minutes(): number {
-    const val = this.localStorage.getItem(LOCAL_STORAGE_KEYS.MINUTES);
-    return val ? Number.parseInt(val) : this._minutes;
+  get time() {
+    return this.finished ? this.restTime : this.workTime;
   }
 
-  set minutes(val: number) {
-    this.localStorage.setItem('@NG_POMODORO_MINUTES', val.toString());
-    this._minutes = val;
+  get workTime(): number {
+    return this._getMinute('work');
+  }
+
+  set workTime(val: number) {
+    this._setMinute(val, 'work');
+  }
+
+  get restTime(): number {
+    return this._getMinute('rest');
+  }
+
+  set restTime(val: number) {
+    this._setMinute(val, 'rest');
   }
 
   private get _milliseconds(): number {
-    return this.minutes * 60_000;
+    return this.time * 60_000;
+  }
+
+  private get _progress(): number {
+    const time = this._currentTime / this._milliseconds;
+    const progress = (this.finished ? time : 1 - time);
+    return Number.parseFloat(this.numberPipe.transform(progress, '0.0-2')!);
   }
 
   constructor(
@@ -45,12 +62,8 @@ export class PomodoroService implements OnDestroy {
   }
 
   start(): void {
-    let minutes = this._currentTime;
-    if (!minutes) {
-      minutes = this._milliseconds;
-      this._currentTime = minutes;
-    }
-
+    this.progress = PROGRESS_STATE.START;
+    this._currentTime = this._milliseconds;
     this._timer?.unsubscribe();
     this._updateDisplay();
     this._timer = interval(1_000)
@@ -58,7 +71,18 @@ export class PomodoroService implements OnDestroy {
   }
 
   stop(): void {
+    this._currentTime = 0;
+    this._updateDisplay();
     this._timer?.unsubscribe();
+  }
+
+  private _updateState(): void {
+    this._currentTime -= 1_000;
+    this._updateDisplay();
+    this.progress = this._progress;
+    if (this._currentTime === PROGRESS_STATE.START) {
+      this._finish();
+    }
   }
 
   private _updateDisplay(): void {
@@ -67,18 +91,21 @@ export class PomodoroService implements OnDestroy {
     this.displayTime = new Date(`2020-01-01 00:${ minutes }:${ seconds }`);
   }
 
-  private _updateState(): void {
-    this._currentTime -= 1_000;
-    this._updateDisplay();
-    this.progress = Number.parseFloat(this.numberPipe.transform(1 - this._currentTime / this._milliseconds, '0.0-2')!);
-    if (this._currentTime === PROGRESS_STATE.START) {
-      this._finish();
-    }
-  }
-
   private _finish(): void {
     this.sound.playWarning();
-    this.onFinished.emit();
-    this.stop();
+    this.finished = !this.finished;
+    this._currentTime = this._milliseconds;
+  }
+
+  private _setMinute(val: number, period: Period): void {
+    let stringData = this.localStorage.getItem(LOCAL_STORAGE_KEYS.MINUTES);
+    const data = !!stringData ? JSON.parse(stringData) : {};
+    this.localStorage.setItem(LOCAL_STORAGE_KEYS.MINUTES, JSON.stringify({ ...data, [period]: val }));
+  }
+
+  private _getMinute(period: Period): number {
+    let stringData = this.localStorage.getItem(LOCAL_STORAGE_KEYS.MINUTES);
+    const data = !!stringData ? JSON.parse(stringData) : {};
+    return data[period] ?? this[`_${ period }Default`];
   }
 }

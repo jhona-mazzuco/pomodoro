@@ -1,9 +1,9 @@
 import { DecimalPipe } from "@angular/common";
 import { discardPeriodicTasks, fakeAsync, TestBed, tick } from '@angular/core/testing';
-import { interval } from "rxjs";
-import { LOCAL_STORAGE_KEYS } from "../constants/local-storage-keys.constant";
+import { Subscription } from 'rxjs';
+import { LOCAL_STORAGE_KEYS } from '../constants/local-storage-keys.constant';
 import { LOCAL_STORAGE_TOKEN } from "../constants/local-storage-token";
-import { PROGRESS_STATE } from "../constants/progress-state.constant";
+import { PROGRESS_STATE } from '../constants/progress-state.constant';
 
 import { PomodoroService } from './pomodoro.service';
 import { SoundService } from "./sound.service";
@@ -32,33 +32,81 @@ describe('PomodoroService', () => {
     sound = TestBed.inject(SoundService);
   });
 
+  afterEach(() => {
+    service['_timer']?.unsubscribe();
+  });
+
   it('should be created', () => {
     expect(service).toBeTruthy();
   });
 
-  it('should return saved minute', () => {
-    const getItemSpy = spyOn(service['localStorage'], 'getItem').and.returnValue('10');
+  describe('time', () => {
+    it('should return rest time', () => {
+      service.finished = true;
 
-    expect(service.minutes).toEqual(10);
-    expect(getItemSpy).toHaveBeenCalledWith(LOCAL_STORAGE_KEYS.MINUTES);
-  })
+      const propSpy = spyOnProperty(service, 'restTime');
 
-  it('should save minute and save in local storage', () => {
-    const setItemSpy = spyOn(service['localStorage'], 'setItem').and.stub();
+      service.time;
 
-    service.minutes = 5;
+      expect(propSpy).toHaveBeenCalled();
+    });
 
-    expect(service.minutes).toEqual(5);
-    expect(setItemSpy).toHaveBeenCalledWith(LOCAL_STORAGE_KEYS.MINUTES, '5');
+    it('should return work time', () => {
+      service.finished = false;
+
+      const propSpy = spyOnProperty(service, 'workTime');
+
+      service.time;
+
+      expect(propSpy).toHaveBeenCalled();
+    });
   });
 
-  it('should return 2 minutes in milliseconds', () => {
-    service.minutes = 2;
-    expect(service['_milliseconds']).toEqual(120_000);
+  it('should call getMinute', () => {
+    const getMinuteSpy = spyOn(service as any, '_getMinute').and.stub();
+
+    service.workTime;
+
+    expect(getMinuteSpy).withContext('when call workTime').toHaveBeenCalledWith('work');
+
+    service.restTime;
+
+    expect(getMinuteSpy).withContext('when call restTime').toHaveBeenCalledWith('rest');
   });
 
-  it('should destroy interval subscription on service destroy', () => {
-    service['_timer'] = interval(100).subscribe();
+  it('should call setMinute', () => {
+    const setMinuteSpy = spyOn(service as any, '_setMinute').and.stub();
+
+    const workTime = 100;
+    service.workTime = workTime;
+
+    expect(setMinuteSpy).withContext('when set workTime').toHaveBeenCalledWith(workTime, 'work');
+
+    const restTime = 200;
+    service.restTime = restTime;
+
+    expect(setMinuteSpy).withContext('when set restTime').toHaveBeenCalledWith(restTime, 'rest');
+  });
+
+  it('should transform time in milliseconds', () => {
+
+    spyOnProperty(service, 'time').and.returnValue(5);
+
+    expect(service['_milliseconds']).toEqual(300_000);
+  });
+
+  it('should return progress', () => {
+    service['_currentTime'] = 30640;
+
+    service.finished = false;
+    expect(service['_progress']).withContext('when is not finished').toEqual(0.98);
+
+    service.finished = true;
+    expect(service['_progress']).withContext('when is finished').toEqual(0.1);
+  });
+
+  it('should unsubscribe timer', () => {
+    service['_timer'] = new Subscription();
 
     const unsubscribeSpy = spyOn(service['_timer'], 'unsubscribe').and.stub();
 
@@ -67,131 +115,125 @@ describe('PomodoroService', () => {
     expect(unsubscribeSpy).toHaveBeenCalled();
   });
 
-  describe('start', () => {
-    beforeEach(() => {
-      service['_currentTime'] = 0;
-      (service['_timer'] as any) = undefined;
-    });
+  it('should start timer', () => {
+    service.progress = PROGRESS_STATE.FINISH;
 
-    it('should update current time when dont has a value', () => {
-      service.minutes = 2;
+    const millisecondsSpy = spyOnProperty(service as any, '_milliseconds');
+    const updateDisplaySpy = spyOn(service as any, '_updateDisplay').and.stub();
 
-      const millisecondsSpy = spyOnProperty((service as any), '_milliseconds', 'get').and.callThrough();
+    service.start();
 
-      service.start();
-
-      expect(millisecondsSpy).toHaveBeenCalled();
-      expect(service['_currentTime']).toEqual(120_000);
-    });
-
-    it('should destroy the last timer', () => {
-      service['_timer'] = interval(100).subscribe();
-
-      const unsubscribeSpy = spyOn(service['_timer'], 'unsubscribe');
-
-      service.start();
-
-      expect(unsubscribeSpy).toHaveBeenCalled();
-    });
-
-    it('should call updateDisplay', () => {
-      const updateDisplaySpy = spyOn((service as any), '_updateDisplay').and.stub();
-
-      service.start();
-
-      expect(updateDisplaySpy).toHaveBeenCalled();
-    });
-
-    it('should fill timer with subscription of interval', () => {
-      service.start();
-
-      expect(service['_timer']).toBeDefined();
-    });
-
-    it('should update state after 1 second', fakeAsync(() => {
-      const updateStateSpy = spyOn((service as any), '_updateState').and.callThrough();
-
-      service.start();
-
-      expect(updateStateSpy).not.toHaveBeenCalled();
-
-      tick(1000)
-
-      expect(updateStateSpy).toHaveBeenCalled();
-
-      discardPeriodicTasks();
-    }));
+    expect(service.progress).toEqual(PROGRESS_STATE.START);
+    expect(millisecondsSpy).toHaveBeenCalled();
+    expect(updateDisplaySpy).toHaveBeenCalled();
   });
 
-  it('should destroy interval subscription', () => {
-    service['_timer'] = interval(100).subscribe();
+  it('should call updateState after one minute', fakeAsync(() => {
+    const updateStateSpy = spyOn(service as any, '_updateState');
 
-    const unsubscribeSpy = spyOn(service['_timer'], 'unsubscribe').and.stub();
+    service.start();
 
-    service.ngOnDestroy();
+    tick(1_000);
 
+    expect(updateStateSpy).toHaveBeenCalled();
+
+    discardPeriodicTasks();
+  }));
+
+  it('should stop timer and set default state', () => {
+    service['_currentTime'] = 500;
+    service['_timer'] = new Subscription();
+
+    const updateDisplaySpy = spyOn(service as any, '_updateDisplay');
+    const unsubscribeSpy = spyOn(service['_timer'], 'unsubscribe');
+
+    service.stop();
+
+    expect(service['_currentTime']).toEqual(0);
+    expect(updateDisplaySpy).toHaveBeenCalled();
     expect(unsubscribeSpy).toHaveBeenCalled();
   });
 
-  it('should update display time with current time', () => {
-    service['_currentTime'] = 630_000;
+  it('should update state', () => {
+    const progress = 0.7;
+    service['_currentTime'] = 5_000;
+
+    const updateDisplaySpy = spyOn(service as any, '_updateDisplay');
+    spyOnProperty(service as any, '_progress').and.returnValue(progress);
+
+    service['_updateState']();
+
+    expect(service['_currentTime']).toEqual(4_000);
+    expect(updateDisplaySpy).toHaveBeenCalled();
+    expect(service.progress).toEqual(progress);
+  });
+
+  it('should call finish when start is current time', () => {
+    service['_currentTime'] = 1_000;
+
+    const finishSpy = spyOn(service as any, '_finish').and.stub();
+
+    service['_updateState']();
+
+    expect(finishSpy).toHaveBeenCalled();
+  });
+
+  it('should update display', () => {
+    service.displayTime = new Date();
+    service['_currentTime'] = 5345;
 
     service['_updateDisplay']();
 
-    expect(service.displayTime.getMinutes()).toEqual(10);
-    expect(service.displayTime.getSeconds()).toEqual(30);
+    expect(service.displayTime.getSeconds()).toEqual(5);
+    expect(service.displayTime.getMinutes()).toEqual(0);
   });
 
-  describe('updateState', () => {
-    it('should subtract 1 second of current time', () => {
-      service['_currentTime'] = 60_000;
+  it('should finish timer', () => {
+    const milliseconds = 50_000;
 
-      service['_updateState']();
+    service.finished = false;
 
-      expect(service['_currentTime']).toEqual(59_000);
-    });
-
-    it('should call update display method', () => {
-      const updateDisplaySpy = spyOn((service as any), '_updateDisplay').and.stub();
-
-      service['_updateState']();
-
-      expect(updateDisplaySpy).toHaveBeenCalled();
-    });
-
-    it('should update progress', () => {
-      service['_currentTime'] = 55_000;
-
-      service.minutes = 1;
-
-      service['_updateState']();
-
-      expect(service.progress).toEqual(0.1);
-    });
-
-    it('should finish timer', () => {
-      service['_currentTime'] = 1_000;
-
-      const finishSpy = spyOn(service as any, '_finish').and.stub();
-
-      service.minutes = 1;
-
-      service['_updateState']();
-
-      expect(service.progress).toEqual(PROGRESS_STATE.FINISH);
-      expect(finishSpy).toHaveBeenCalled();
-    });
-  });
-
-  it('should be finish timer', () => {
-    const playWarningSpy = spyOn(sound, 'playWarning').and.stub();
-    const emitSpy = spyOn(service.onFinished, 'emit').and.stub();
-    const stopSpy = spyOn(service, 'stop').and.stub();
+    const playSpy = spyOn(sound, 'playWarning').and.stub();
+    spyOnProperty(service as any, '_milliseconds', 'get').and.returnValue(milliseconds);
 
     service['_finish']();
 
-    expect(playWarningSpy).toHaveBeenCalled();
-    expect(emitSpy).toHaveBeenCalled();
-    expect(stopSpy).toHaveBeenCalled();
+    expect(playSpy).toHaveBeenCalled();
+    expect(service.finished).toBeTrue();
+    expect(service['_currentTime']).toEqual(milliseconds);
+  });
+
+  it('should set minute', () => {
+    const localStorage = service['localStorage'];
+
+    const getItemSpy = spyOn(localStorage, 'getItem').and.returnValue(null);
+    const setItemSpy = spyOn(localStorage, 'setItem').and.stub();
+
+    service['_setMinute'](1, 'rest');
+
+    const stringifyRestTest = JSON.stringify({ rest: 1 });
+    expect(setItemSpy).withContext('when not have minutes saved').toHaveBeenCalledWith(LOCAL_STORAGE_KEYS.MINUTES, stringifyRestTest);
+
+
+    getItemSpy.and.returnValue(JSON.stringify({ rest: 25, work: 5 }));
+
+    service['_setMinute'](50, 'work');
+
+    const stringifyWorkTest = JSON.stringify({ rest: 25, work: 50 })
+    expect(setItemSpy).withContext('when have minutes saved').toHaveBeenCalledWith(LOCAL_STORAGE_KEYS.MINUTES, stringifyWorkTest);
+  });
+
+  it('should get minute', () => {
+    const localStorage = service['localStorage'];
+
+    const getItemSpy = spyOn(localStorage, 'getItem').and.returnValue(JSON.stringify({ rest: 5, work: 50 }))
+
+    const restMinute = service['_getMinute']('rest');
+    expect(restMinute).withContext('when have minute saved').toEqual(5);
+
+    getItemSpy.and.returnValue(null);
+
+    const workMinute = service['_getMinute']('work');
+    expect(workMinute).withContext('when dont have minute saved').toEqual(service['_workDefault']);
   });
 });

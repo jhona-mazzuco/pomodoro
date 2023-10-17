@@ -2,7 +2,7 @@ import { Component, forwardRef, OnInit } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from "@angular/forms";
 import { faMusic } from "@fortawesome/free-solid-svg-icons/faMusic";
 import { SoundService } from "../../../../shared/services/sound.service";
-import { WarningSound } from "../../../../shared/types/warning-sound.type";
+import { WarningSound } from "../../../../shared/types/warning-sound";
 import { SOUNDS } from "../../constants/sounds.constant";
 
 @Component({

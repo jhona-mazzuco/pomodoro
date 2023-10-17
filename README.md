@@ -3,6 +3,8 @@
 Bem-vindo ao Pomodoro! Este é um aplicativo simples de gerenciamento de tempo baseado na técnica Pomodoro,
 que ajuda a melhorar a produtividade dividindo o tempo em intervalos de trabalho e descanso.
 
+![Imagem do Aplicativo](/pomodoro.jpg)
+
 ## Demonstração
 
 Confira a demonstração do aplicativo [aqui](https://pomodoro-rho-two.vercel.app).

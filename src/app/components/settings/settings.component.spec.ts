@@ -6,7 +6,7 @@ import { LOCAL_STORAGE_TOKEN } from "../../shared/constants/local-storage-token"
 import { PROGRESS_STATE } from "../../shared/constants/progress-state.constant";
 import { PomodoroService } from "../../shared/services/pomodoro.service";
 import { SoundService } from "../../shared/services/sound.service";
-import { WarningSound } from "../../shared/types/warning-sound.type";
+import { WarningSound } from "../../shared/types/warning-sound";
 import { MinutesInputComponent } from "./components/minutes-input/minutes-input.component";
 import { SoundInputComponent } from "./components/sound-input/sound-input.component";
 import { SettingForm } from "./interfaces/setting-form.interface";
@@ -57,51 +57,48 @@ describe('SettingsComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should call build form method', () => {
-    const buildFormSpy = spyOn(component, 'buildForm').and.stub();
-
-    component.ngOnInit();
-
-    expect(buildFormSpy).toHaveBeenCalled();
-  });
-
   it('should build form', () => {
-    const minutes = 1;
+    const workTime = 10;
+    const restTime = 5;
     const attentionFile: WarningSound = 'attention';
 
     const groupSpy = spyOn(fb, 'group').and.stub().and.returnValue(new FormGroup({}));
-    const minutesSpy = spyOnProperty(pomodoro, 'minutes', 'get').and.returnValue(minutes);
-    const attentionFileSpy = spyOnProperty(sound, 'warningSavedFile', 'get').and.returnValue(attentionFile);
+    spyOnProperty(pomodoro, 'workTime', 'get').and.returnValue(workTime);
+    spyOnProperty(pomodoro, 'restTime', 'get').and.returnValue(restTime);
+    spyOnProperty(sound, 'warningSavedFile', 'get').and.returnValue(attentionFile);
 
-    component.buildForm();
+    component.ngOnInit();
 
-    expect(minutesSpy).toHaveBeenCalled();
-    expect(attentionFileSpy).toHaveBeenCalled();
     expect(groupSpy).toHaveBeenCalledWith({
-      minutes: [minutes],
+      workTime: [workTime],
+      restTime: [restTime],
       sound: [attentionFile]
     } as unknown as FormGroup<SettingForm>);
   });
 
   it('should be onSubmit', () => {
-    const minutes = 1;
+    const workTime = 20;
+    const restTime = 10;
     const attentionFile: WarningSound = 'attention';
 
     pomodoro.progress = 0.43;
     component.form = new FormGroup<SettingForm>({
-      minutes: new FormControl(minutes),
+      workTime: new FormControl<number>(workTime),
+      restTime: new FormControl<number>(restTime),
       sound: new FormControl<WarningSound>(attentionFile)
     });
 
-    const minutesSpy = spyOnProperty(pomodoro, 'minutes', 'set').and.callThrough();
+    const workSpy = spyOnProperty(pomodoro, 'workTime', 'set').and.callThrough();
+    const restSpy = spyOnProperty(pomodoro, 'restTime', 'set').and.callThrough();
     const attentionFileSpy = spyOnProperty(sound, 'warningSavedFile', 'set').and.callThrough();
     const emitSpy = spyOn(component.close, 'emit').and.stub();
 
     component.onSubmit();
 
-    expect(minutesSpy).toHaveBeenCalledWith(minutes);
+    expect(workSpy).toHaveBeenCalledWith(workTime);
+    expect(restSpy).toHaveBeenCalledWith(restTime);
     expect(attentionFileSpy).toHaveBeenCalledWith(attentionFile);
-    expect(pomodoro.progress).toEqual(PROGRESS_STATE.FINISH);
+    expect(pomodoro.progress).toEqual(PROGRESS_STATE.START);
     expect(emitSpy).toHaveBeenCalled();
   });
 });

@@ -1,10 +1,16 @@
 <div class="pomodoro">
   <app-circular-progress [percentage]="pomodoro.progress" [showProgress]="started">
     <p class="pomodoro__timer">{{ pomodoro.displayTime | date: 'mm:ss' }}</p>
-    <p class="pomodoro__status">{{ started ? 'Iniciado' : 'Pausado' }}</p>
+    <p class="pomodoro__status">
+      <ng-container *ngIf="started; else StopTemplate">
+        {{ pomodoro.finished ? 'Descanse' : 'Trabalhe' }}
+      </ng-container>
+
+      <ng-template #StopTemplate>Parado</ng-template>
+    </p>
   </app-circular-progress>
 
   <button class="pomodoro__button" (click)="changeStatus()">
-    <fa-icon [icon]="started ? pauseIcon : playIcon" size="2x"></fa-icon>
+    <fa-icon [icon]="started ? stopIcon : playIcon" size="2x"></fa-icon>
   </button>
 </div>

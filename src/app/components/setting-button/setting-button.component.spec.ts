@@ -113,6 +113,6 @@ describe('SettingButtonComponent', () => {
   it('should has cog icon', () => {
     const el = fixture.debugElement.query(By.css('fa-icon'));
 
-    expect(el.nativeNode.icon.iconName).toEqual('cog');
+    expect(el.nativeNode.icon.iconName).toEqual('gear');
   });
 });

@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { LOCAL_STORAGE_KEYS } from "../constants/local-storage-keys.constant";
 import { LOCAL_STORAGE_TOKEN } from "../constants/local-storage-token";
-import { WarningSound } from "../types/warning-sound.type";
+import { WarningSound } from "../types/warning-sound";
 
 import { SoundService } from './sound.service';
 

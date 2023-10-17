@@ -6,7 +6,9 @@ import { BrowserModule } from '@angular/platform-browser';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 import { AppComponent } from './app.component';
-import { CircularProgressComponent } from './components/pomodoro/components/circular-progress/circular-progress.component';
+import {
+  CircularProgressComponent
+} from './components/pomodoro/components/circular-progress/circular-progress.component';
 import { PomodoroComponent } from './components/pomodoro/pomodoro.component';
 import { SettingButtonComponent } from './components/setting-button/setting-button.component';
 import { MinutesInputComponent } from './components/settings/components/minutes-input/minutes-input.component';

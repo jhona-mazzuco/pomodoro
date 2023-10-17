@@ -1,10 +1,9 @@
 import { DecimalPipe } from "@angular/common";
 import { CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { By } from "@angular/platform-browser";
+import { By } from '@angular/platform-browser';
 import { LOCAL_STORAGE_TOKEN } from "../../shared/constants/local-storage-token";
 import { PomodoroService } from "../../shared/services/pomodoro.service";
-
 import { PomodoroComponent } from './pomodoro.component';
 
 describe('PomodoroComponent', () => {
@@ -42,16 +41,6 @@ describe('PomodoroComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should change status when finished', () => {
-    component.started = true;
-
-    component.ngOnInit();
-
-    pomodoro['onFinished'].emit();
-
-    expect(component.started).toBeFalse();
-  });
-
   describe('changeStatus', () => {
     it('should start pomodoro', () => {
       component.started = false;
@@ -86,14 +75,14 @@ describe('PomodoroComponent', () => {
     expect(iconEl.nativeNode.icon.iconName).toEqual('play');
   });
 
-  it('should show pause icon', () => {
+  it('should show stop icon', () => {
     component.started = true;
 
     const iconEl = fixture.debugElement.query(By.css('fa-icon'));
 
     fixture.detectChanges();
 
-    expect(iconEl.nativeNode.icon.iconName).toEqual('pause');
+    expect(iconEl.nativeNode.icon.iconName).toEqual('stop');
   });
 
   it('should show 10 minutes and 25 seconds', () => {
@@ -113,7 +102,7 @@ describe('PomodoroComponent', () => {
 
     const el = fixture.debugElement.query(By.css('.pomodoro__status'));
 
-    expect(el.nativeElement.textContent).toEqual('Pausado')
+    expect(el.nativeElement.textContent).toEqual('Parado')
   });
 
   it('should show paused started label', () => {
@@ -123,7 +112,7 @@ describe('PomodoroComponent', () => {
 
     const el = fixture.debugElement.query(By.css('.pomodoro__status'));
 
-    expect(el.nativeElement.textContent).toEqual('Iniciado')
+    expect(el.nativeElement.textContent.toString().trim()).toEqual('Trabalhe')
   });
 
   it('should call changeStatus method when button clicked', () => {
@@ -136,3 +125,4 @@ describe('PomodoroComponent', () => {
     expect(changeStatusSpy).toHaveBeenCalled();
   });
 });
+

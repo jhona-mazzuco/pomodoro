@@ -1,7 +1,8 @@
 import { FormControl } from "@angular/forms";
-import { WarningSound } from "../../../shared/types/warning-sound.type";
+import { WarningSound } from "../../../shared/types/warning-sound";
 
 export interface SettingForm {
-  minutes: FormControl<number | null>;
+  workTime: FormControl<number | null>;
+  restTime: FormControl<number | null>;
   sound: FormControl<WarningSound | null>
  }

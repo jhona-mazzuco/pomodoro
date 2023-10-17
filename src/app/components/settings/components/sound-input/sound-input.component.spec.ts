@@ -2,7 +2,7 @@ import { CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { LOCAL_STORAGE_TOKEN } from "../../../../shared/constants/local-storage-token";
 import { SoundService } from "../../../../shared/services/sound.service";
-import { WarningSound } from "../../../../shared/types/warning-sound.type";
+import { WarningSound } from "../../../../shared/types/warning-sound";
 
 import { SoundInputComponent } from './sound-input.component';
 

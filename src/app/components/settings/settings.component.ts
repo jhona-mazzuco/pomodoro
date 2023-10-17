@@ -22,21 +22,19 @@ export class SettingsComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.buildForm();
-  }
-
-  buildForm() {
     this.form = this.fb.group({
-      minutes: [this.pomodoro.minutes],
+      workTime: [this.pomodoro.workTime],
+      restTime: [this.pomodoro.restTime],
       sound: [this.sound.warningSavedFile]
     }) as FormGroup<SettingForm>;
   }
 
   onSubmit(): void {
-    const { sound, minutes } = this.form.value;
-    this.pomodoro.minutes = minutes!;
+    const { sound, workTime, restTime } = this.form.value;
+    this.pomodoro.workTime = workTime!;
+    this.pomodoro.restTime = restTime!;
     this.sound.warningSavedFile = sound!;
-    this.pomodoro.progress = PROGRESS_STATE.FINISH;
+    this.pomodoro.progress = PROGRESS_STATE.START;
     this.close.emit();
   }
 }

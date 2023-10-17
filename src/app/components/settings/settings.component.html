@@ -3,8 +3,13 @@
 
   <form class="setting__content" [formGroup]="form" (ngSubmit)="onSubmit()">
     <div class="setting__control">
-      <label>Tempo:</label>
-      <app-minutes-input formControlName="minutes"></app-minutes-input>
+      <label>Tempo de trabalho:</label>
+      <app-minutes-input formControlName="workTime"></app-minutes-input>
+    </div>
+
+    <div class="setting__control">
+      <label>Tempo de descanso:</label>
+        <app-minutes-input formControlName="restTime"></app-minutes-input>
     </div>
 
     <div class="setting__control">

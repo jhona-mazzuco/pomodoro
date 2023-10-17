@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { faPause } from "@fortawesome/free-solid-svg-icons";
+import { Component } from '@angular/core';
+import { faStop } from "@fortawesome/free-solid-svg-icons";
 import { faPlay } from "@fortawesome/free-solid-svg-icons/faPlay";
 import { PomodoroService } from "../../shared/services/pomodoro.service";
 
@@ -8,16 +8,13 @@ import { PomodoroService } from "../../shared/services/pomodoro.service";
   templateUrl: './pomodoro.component.html',
   styleUrls: ['./pomodoro.component.scss']
 })
-export class PomodoroComponent implements OnInit {
+export class PomodoroComponent {
+  readonly playIcon = faPlay;
+  readonly stopIcon = faStop;
+
   started = false;
-  playIcon = faPlay;
-  pauseIcon = faPause;
 
   constructor(protected pomodoro: PomodoroService) {
-  }
-
-  ngOnInit(): void {
-    this.pomodoro.onFinished.subscribe(() => this.started = false);
   }
 
   changeStatus() {
